@@ -19,6 +19,8 @@ public class ContactList extends Activity {
 
     private ListView contactList;
     private ArrayList<String> names;
+    private ArrayList<Person> personList;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +29,14 @@ public class ContactList extends Activity {
 
         contactList =(ListView)findViewById(R.id.listView_contact);
         names = new ArrayList<String>();
+        personList = new ArrayList<Person>();
+        databaseHelper = new DatabaseHelper(getApplicationContext());
 
-        for(int i=0;i<((App)getApplication()).getPersonList().size();i++)
+        personList = databaseHelper.getPersons();
+
+        for(int i=0;i<personList.size();i++)
         {
-            names.add(((App)getApplication()).getPersonList().get(i).toString());
+            names.add(personList.get(i).toString());
         }
 
         ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>

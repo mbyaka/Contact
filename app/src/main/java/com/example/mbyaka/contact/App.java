@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class App extends Application {
 
     private ArrayList<Person> personList;
+    private DatabaseHelper databaseHelper;
 
     public ArrayList<Person> getPersonList() {
         return personList;
@@ -27,8 +28,9 @@ public class App extends Application {
         super.onCreate();
 
         personList = new ArrayList<Person>();
+        databaseHelper = new DatabaseHelper(getApplicationContext());
 
-        Person person = new Person();
+        Person person =null;
 
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -37,6 +39,7 @@ public class App extends Application {
             while (cur.moveToNext()) {
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
                 if (Integer.parseInt(cur.getString(
                         cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     Cursor pCur = cr.query(
@@ -44,21 +47,30 @@ public class App extends Application {
                             null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
                             new String[]{id}, null);
-                    if (pCur.moveToNext()) {
 
-                        person = new Person();
+                    if (pCur.moveToNext()){
+
+                        String[] names = null;
+                        String surName = "";
+
+                        if(name.split(" ").length > 0) {
+                            names= name.split(" ");
+                            surName = names[names.length - 1];
+                            name ="";
+                            for(int i=0;i<names.length-1;i++)
+                                name += names[i] + " ";
+                        }
                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //Toast.makeText(NativeContentProvider.this, "Name: " + name + ", Phone No: " + phoneNo, Toast.LENGTH_SHORT).show();
 
-                        person.setName(name);
-                        person.setNumber(phoneNo);
-                        personList.add(person);
+                        ArrayList<PhoneCalls> phoneCallses = new ArrayList<PhoneCalls>();
+                        person = new Person(personList.size(),name,surName,"","",phoneNo,"","",0,0,0,0,0,phoneCallses);
 
+                        //personList.add(person);
+                        databaseHelper.addPerson(person);
                     }
                     pCur.close();
                 }
             }
         }
-
     }
 }

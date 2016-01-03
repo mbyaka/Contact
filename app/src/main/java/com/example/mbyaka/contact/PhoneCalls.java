@@ -9,17 +9,27 @@ import java.util.Date;
  */
 public class PhoneCalls {
 
+    private int ID;
     private Date date;
-    private Time time;
+    private Date time;
     private int duration;
-    private Person person;
+    private Boolean isMissingCalls;
+    private int personID;
 
-    public PhoneCalls()
+    public PhoneCalls(Date date,Date time,int duration,Boolean isMissingCalls)
     {
-        date = new Date();
-        time = new Time();
-        duration = 0;
-        person = new Person();
+        this.date = date;
+        this.time = time;
+        this.duration = duration;
+        this.isMissingCalls = isMissingCalls;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public Date getDate() {
@@ -30,11 +40,11 @@ public class PhoneCalls {
         this.date = date;
     }
 
-    public Time getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -46,11 +56,21 @@ public class PhoneCalls {
         this.duration = duration;
     }
 
-    public Person getPerson() {
-        return person;
+    public Boolean getIsMissingCalls() {
+        return isMissingCalls;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setIsMissingCalls(Boolean isMissingCalls) {
+        this.isMissingCalls = isMissingCalls;
     }
+
+    public int getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(int personID) {
+        this.personID = personID;
+    }
+
+
 }
