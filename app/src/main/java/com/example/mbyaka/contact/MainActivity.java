@@ -36,6 +36,7 @@ public class MainActivity extends ActionBarActivity {
     Button btn_number_message;
     Button btn_number_back;
     Button btn_contact_list;
+    Button btn_all_messages;
 
     TextView textView_showNumber;
 
@@ -44,24 +45,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btn_new_person = (Button)findViewById(R.id.btn_new_person);
-        btn_number_1 = (Button)findViewById(R.id.btn_number_1);
-        btn_number_2 = (Button)findViewById(R.id.btn_number_2);
-        btn_number_3 = (Button)findViewById(R.id.btn_number_3);
-        btn_number_4 = (Button)findViewById(R.id.btn_number_4);
-        btn_number_5 = (Button)findViewById(R.id.btn_number_5);
-        btn_number_6 = (Button)findViewById(R.id.btn_number_6);
-        btn_number_7 = (Button)findViewById(R.id.btn_number_7);
-        btn_number_8 = (Button)findViewById(R.id.btn_number_8);
-        btn_number_9 = (Button)findViewById(R.id.btn_number_9);
-        btn_number_0 = (Button)findViewById(R.id.btn_number_0);
-        btn_number_star = (Button)findViewById(R.id.btn_number_star);
-        btn_number_sharp = (Button)findViewById(R.id.btn_number_sharp);
-        btn_number_call = (Button)findViewById(R.id.btn_number_call);
-        btn_number_message = (Button)findViewById(R.id.btn_number_message);
-        btn_number_back = (Button)findViewById(R.id.btn_number_back);
-        btn_contact_list = (Button)findViewById(R.id.btn_contact_list);
-        textView_showNumber = (TextView)findViewById(R.id.textView_showNumber);
+        initComponents();
 
         btn_number_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,10 +119,16 @@ public class MainActivity extends ActionBarActivity {
                     startActivity(newPersonIntent);
                 }
                 else {
-                    Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:" + textView_showNumber.getText().toString()));
-                    startActivity(callIntent);
+                    textView_showNumber.setText(btn_new_person.getText().toString().split("\n")[1]);
                 }
+            }
+        });
+
+        btn_all_messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent allSmsIntetn = new Intent(getApplicationContext(), SmsList.class);
+                startActivity(allSmsIntetn);
             }
         });
 
@@ -164,7 +154,7 @@ public class MainActivity extends ActionBarActivity {
                     }
 
                     if (i != personList.size()) {
-                        btn_new_person.setText(personList.get(i).toString());
+                        btn_new_person.setText(personList.get(i).toString() + "\n" + personList.get(i).getMobile_number());
                     } else {
                         btn_new_person.setText("Yeni Kişi");
                     }
@@ -181,8 +171,29 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+    }
 
+    private void initComponents() {
+        btn_new_person = (Button)findViewById(R.id.btn_new_person);
+        btn_number_1 = (Button)findViewById(R.id.btn_number_1);
+        btn_number_2 = (Button)findViewById(R.id.btn_number_2);
+        btn_number_3 = (Button)findViewById(R.id.btn_number_3);
+        btn_number_4 = (Button)findViewById(R.id.btn_number_4);
+        btn_number_5 = (Button)findViewById(R.id.btn_number_5);
+        btn_number_6 = (Button)findViewById(R.id.btn_number_6);
+        btn_number_7 = (Button)findViewById(R.id.btn_number_7);
+        btn_number_8 = (Button)findViewById(R.id.btn_number_8);
+        btn_number_9 = (Button)findViewById(R.id.btn_number_9);
+        btn_number_0 = (Button)findViewById(R.id.btn_number_0);
+        btn_number_star = (Button)findViewById(R.id.btn_number_star);
+        btn_number_sharp = (Button)findViewById(R.id.btn_number_sharp);
+        btn_number_call = (Button)findViewById(R.id.btn_number_call);
+        btn_number_message = (Button)findViewById(R.id.btn_number_message);
+        btn_number_back = (Button)findViewById(R.id.btn_number_back);
+        btn_contact_list = (Button)findViewById(R.id.btn_contact_list);
+        btn_all_messages = (Button)findViewById(R.id.btn_all_messages);
 
+        textView_showNumber = (TextView)findViewById(R.id.textView_showNumber);
     }
 
     public void numberOnClick(View view) {

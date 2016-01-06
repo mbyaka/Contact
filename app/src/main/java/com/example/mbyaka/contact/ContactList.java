@@ -60,7 +60,7 @@ public class ContactList extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent setPersonIntent = new Intent(getApplicationContext(),PersonInfo.class);
-                setPersonIntent.putExtra("PERSON_ID",personList.get(indexes.get(position)).getID());
+                setPersonIntent.putExtra("PERSON_POSITION",indexes.get(position));
                 startActivity(setPersonIntent);
             }
         });
@@ -79,7 +79,12 @@ public class ContactList extends Activity {
                 indexes.clear();
                 for(int i= 0;i<personList.size();i++)
                 {
-                    if(personList.get(i).getName().contains(editText_search_person.getText()))
+                    String listName = personList.get(i).getName();
+                    String searchName = editText_search_person.getText().toString();
+
+                    listName = listName.toLowerCase();
+                    searchName = searchName.toLowerCase();
+                    if(listName.contains(searchName))
                     {
                         foundedNames.add(names.get(i));
                         indexes.add(i);

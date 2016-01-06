@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * Created by YAKA on 4.1.2016.
  */
@@ -39,6 +41,7 @@ public class PersonInfo extends Activity{
     private Button btn_person_edit;
     private LinearLayout linearLayout_person_info_details;
 
+    private ArrayList<Person> personArrayList;
 
     private Person person;
     @Override
@@ -51,9 +54,12 @@ public class PersonInfo extends Activity{
         person = null;
         final DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
 
-        final int personID = getIntent().getExtras().getInt("PERSON_ID");
+        final int personPosıtıon = getIntent().getExtras().getInt("PERSON_POSITION");
 
-        person = ((App)getApplication()).personArrayList.get(personID-1); //person = databaseHelper.getPerson(personID);
+        personArrayList = ((App) getApplication()).personArrayList;
+
+        personArrayList.set(personPosıtıon,databaseHelper.getPerson(((App) getApplication()).personArrayList.get(personPosıtıon).getID()));
+        person = personArrayList.get(personPosıtıon);
 
         setInfoComponents(person);
 
@@ -74,7 +80,7 @@ public class PersonInfo extends Activity{
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             databaseHelper.removePerson(person);
-                            ((App)getApplication()).personArrayList.remove(person.getID()-1);
+                            personArrayList.remove(person.getID()-1);
                             Intent contactListIntent = new Intent(getApplicationContext(),ContactList.class);
                             startActivity(contactListIntent);
                             dialog.dismiss();
@@ -169,7 +175,7 @@ public class PersonInfo extends Activity{
                     editPerson.setLocation(editText_person_location.getText().toString());
 
                     databaseHelper.updatePerson(editPerson);
-                    ((App)getApplication()).personArrayList.set(personID-1,editPerson);
+                    ((App)getApplication()).personArrayList.set(personPosıtıon,editPerson);
 
                 }
 
@@ -179,9 +185,9 @@ public class PersonInfo extends Activity{
         btn_person_messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // mesaj kısmı yazılınca devam et
-
-                Toast.makeText(getApplicationContext(),"Yapım Aşamasında!",Toast.LENGTH_SHORT).show();
+                Intent showMesssagesIntent = new Intent(getApplicationContext(),ShowSms.class);
+                showMesssagesIntent.putExtra("PHONE_NUMBER",person.getMobile_number());
+                startActivity(showMesssagesIntent);
             }
         });
 

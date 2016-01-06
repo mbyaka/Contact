@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by YAKA on 3.1.2016.
@@ -54,16 +56,8 @@ public class App extends Application {
 
                         if (pCur.moveToNext()) {
 
-                            String[] names = null;
                             String surName = "";
 
-                            if (name.split(" ").length > 0) {
-                                names = name.split(" ");
-                                surName = names[names.length - 1];
-                                name = "";
-                                for (int i = 0; i < names.length - 1; i++)
-                                    name += names[i] + " ";
-                            }
                             String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                             phoneNo = editPhoneNumber(phoneNo);
@@ -73,12 +67,15 @@ public class App extends Application {
 
                             count++;
                             databaseHelper.addPerson(person);
+                            personArrayList.add(person);
                         }
                         pCur.close();
                     }
                 }
             }
         }
+        Collections.sort(personArrayList,new Comaprator());
+
     }
 
     @Override

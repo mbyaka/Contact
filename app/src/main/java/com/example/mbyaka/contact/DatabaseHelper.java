@@ -197,7 +197,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         ArrayList<PhoneCall> phoneCalls = new ArrayList<PhoneCall>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String queryPerson = "Select * from " + TABLE_PERSON + " where '"+PERSON_MOBILE_NUMBER+"' = "+phoneNumber;
+        //String queryPerson = "Select * from " + TABLE_PERSON + " where "+PERSON_MOBILE_NUMBER+" = "+phoneNumber;
+
+        Log.i("HATA NUMARA",phoneNumber);
+        String queryPerson = "Select * from Person where  TRIM("+PERSON_MOBILE_NUMBER+") = '"+phoneNumber.trim()+"'";
 
         Cursor cursorPerson = db.rawQuery(queryPerson,null);
         if(cursorPerson.moveToFirst()){
@@ -260,7 +263,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return listPersons;
     }
 
-    public void addPhoneCalls(PhoneCall phoneCall) {
+    public void addPhoneCall(PhoneCall phoneCall) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -274,6 +277,44 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.insert(TABLE_PHONECALLS, null, values);
         db.close();
 
+        ContentValues val = new ContentValues();
+
+        Person person = getPerson(phoneCall.getPersonID());
+
+        if(phoneCall.getIsMissingCalls())
+        {
+            person.setNumberOfMissingCall(person.getNumberOfMissingCall() + 1);
+        }
+
+        else if(phoneCall.getIsComingCalls()) {
+            person.setTotalDurationInComingCall(person.getTotalDurationInComingCall() + phoneCall.getDuration());
+        }
+        else
+        {
+            person.setTotalDurationOutGoingCall(person.getTotalDurationOutGoingCall() + phoneCall.getDuration());
+        }
+
+
+        val.put(PERSON_NAME,person.getName());
+        val.put(PERSON_SURNAME,person.getSurName());
+        val.put(PERSON_HOME_NUMBER,person.getHome_number());
+        val.put(PERSON_MOBILE_NUMBER,person.getMobile_number());
+        val.put(PERSON_WORK_NUMBER,person.getWork_number());
+        val.put(PERSON_EMAIL, person.geteMail());
+        val.put(PERSON_LOCATION, person.getLocation());
+        val.put(PERSON_TOTAL_DURATION_INCOMING_CALL,person.getTotalDurationInComingCall());
+        val.put(PERSON_TOTAL_DURATION_OUTGOING_CALL,person.getTotalDurationOutGoingCall());
+        val.put(PERSON_NUMBER_OF_MISSING_CALL,person.getNumberOfMissingCall());
+        val.put(PERSON_NUMBER_OF_SENT_MESSAGE,person.getNumberOfSentMessage());
+        val.put(PERSON_NUMBER_OF_RECEIVED_MESSAGE,person.getNumberOfReceivedMessage());
+
+        SQLiteDatabase db1 = getWritableDatabase();
+        String where = PERSON_MOBILE_NUMBER + "=?";
+        String[] whereArgs = new String[] {String.valueOf(person.getMobile_number()).trim()};
+        db1.update(TABLE_PERSON, val,where,whereArgs);
+
+        db1.close();
+
     }
 
     public ArrayList<PhoneCall> getAllPhoneCalls()
@@ -285,21 +326,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         String queryPhoneCalls = "Select * from " + TABLE_PHONECALLS;
 
-        DateFormat df = new SimpleDateFormat("MM/dd/yy");
+        //DateFormat df = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
 
-        DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
+        //DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
         Date time = new Date();
 
         Cursor cursorPhoneCalls = db.rawQuery(queryPhoneCalls, null);
         if (cursorPhoneCalls.moveToFirst()) {
             do {
-                try {
+                /*try {
                     date = df.parse(cursorPhoneCalls.getString(cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_DATE)));
                     time = tdf.parse(cursorPhoneCalls.getString(cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_TIME)));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }
+                }*/
                 phoneCall = new PhoneCall(date,time,
                          cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_DURATION),
                          cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_IS_COMING) == 1,
@@ -324,21 +365,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         String queryPhoneCalls = "Select * from " + TABLE_PHONECALLS + " where " +
                 PERSON_PHONECALLS_PERSON_ID + " = " + personID;
 
-        DateFormat df = new SimpleDateFormat("MM/dd/yy");
+        //DateFormat df = new SimpleDateFormat("MM/dd/yy");
         Date date = new Date();
 
-        DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
+        //DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
         Date time = new Date();
 
         Cursor cursorPhoneCalls = db.rawQuery(queryPhoneCalls, null);
         if (cursorPhoneCalls.moveToFirst()) {
             do {
-                try {
+               /*try {
                     date = df.parse(cursorPhoneCalls.getString(cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_DATE)));
                     time = tdf.parse(cursorPhoneCalls.getString(cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_TIME)));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }
+                }*/
                 phoneCall = new PhoneCall(date,time,
                         cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_DURATION),
                         cursorPhoneCalls.getColumnIndex(PERSON_PHONECALLS_IS_COMING) == 1,
@@ -364,7 +405,39 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         values.put(MESSAGE_BODY,message.getBody());
 
         long rowId = db.insert(TABLE_MESSAGES, null, values);
+
+        ContentValues val = new ContentValues();
+
+        Person person = getPerson(message.getWho().trim());
+
+        if(message.getIsComing()) {
+            person.setNumberOfReceivedMessage(person.getNumberOfReceivedMessage() + 1);
+
+        }
+        else {
+            person.setNumberOfSentMessage(person.getNumberOfSentMessage() + 1);
+        }
+
+        val.put(PERSON_NAME,person.getName());
+        val.put(PERSON_SURNAME,person.getSurName());
+        val.put(PERSON_HOME_NUMBER,person.getHome_number());
+        val.put(PERSON_MOBILE_NUMBER,person.getMobile_number());
+        val.put(PERSON_WORK_NUMBER,person.getWork_number());
+        val.put(PERSON_EMAIL, person.geteMail());
+        val.put(PERSON_LOCATION, person.getLocation());
+        val.put(PERSON_TOTAL_DURATION_INCOMING_CALL,person.getTotalDurationInComingCall());
+        val.put(PERSON_TOTAL_DURATION_OUTGOING_CALL,person.getTotalDurationOutGoingCall());
+        val.put(PERSON_NUMBER_OF_MISSING_CALL,person.getNumberOfMissingCall());
+        val.put(PERSON_NUMBER_OF_SENT_MESSAGE,person.getNumberOfSentMessage());
+        val.put(PERSON_NUMBER_OF_RECEIVED_MESSAGE,person.getNumberOfReceivedMessage());
+
+        SQLiteDatabase db1 = getWritableDatabase();
+        String where = PERSON_MOBILE_NUMBER + "=?";
+        String[] whereArgs = new String[] {String.valueOf(person.getMobile_number()).trim()};
+        db1.update(TABLE_PERSON, val,where,whereArgs);
+
         db.close();
+        db1.close();
 
         message.setID((int) rowId);
     }
@@ -375,21 +448,20 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query, null);
         while(cursor.moveToNext()){
 
-            DateFormat df = new SimpleDateFormat("MM/dd/yy");
+            //DateFormat df = new SimpleDateFormat("MM/dd/yy");
             Date date = new Date();
 
-            DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
+            //DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
             Date time = new Date();
 
-            try {
+            /*try {
                 date = df.parse(cursor.getString(cursor.getColumnIndex(MESSAGE_DATE)));
                 time = tdf.parse(cursor.getString(cursor.getColumnIndex(MESSAGE_TIME)));
             } catch (ParseException e) {
                 e.printStackTrace();
-            }
+            }*/
 
-            Message message = new Message(cursor.getInt(cursor.getColumnIndex(MESSAGE_ID)),
-                    cursor.getString(cursor.getColumnIndex(MESSAGE_WHO)),
+            Message message = new Message(cursor.getString(cursor.getColumnIndex(MESSAGE_WHO)),
                     cursor.getColumnIndex(MESSAGE_IS_COMING) == 1,
                     date,
                     time,
@@ -402,26 +474,27 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
     public ArrayList<Message> getMessages(String who){
         ArrayList<Message> arrayList_messages = new ArrayList<>();
-        String query = "Select * from "+TABLE_MESSAGES+" where "+MESSAGE_WHO+" = "+ who;
+        String query = "Select * from "+TABLE_MESSAGES+" where TRIM("+MESSAGE_WHO+") = '"+who.trim()+"'";
+
+
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
         while(cursor.moveToNext()){
 
-            DateFormat df = new SimpleDateFormat("MM/dd/yy");
+            //DateFormat df = new SimpleDateFormat("MM/dd/yy");
             Date date = new Date();
 
-            DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
+            //DateFormat tdf = new SimpleDateFormat("hh:mm:ss a");
             Date time = new Date();
-
+/*
             try {
                 date = df.parse(cursor.getString(cursor.getColumnIndex(MESSAGE_DATE)));
                 time = tdf.parse(cursor.getString(cursor.getColumnIndex(MESSAGE_TIME)));
             } catch (ParseException e) {
                 e.printStackTrace();
-            }
-            Message message = new Message(cursor.getInt(cursor.getColumnIndex(MESSAGE_ID)),
-                    cursor.getString(cursor.getColumnIndex(MESSAGE_WHO)),
-                    cursor.getColumnIndex(MESSAGE_IS_COMING) == 1,
+            }*/
+            Message message = new Message(who,
+                    cursor.getInt(cursor.getColumnIndex(MESSAGE_IS_COMING)) == 1,
                     date,
                     time,
                     cursor.getString(cursor.getColumnIndex(MESSAGE_BODY)));

@@ -12,6 +12,7 @@
         android:layout_height="100dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=""
+        android:gravity="center_vertical"
         android:id="@+id/textView_showNumber"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +25,7 @@
             android:layout_weight="1"
             android:id="@+id/btn_new_person"
             android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
             android:visibility="invisible"/>
     </LinearLayout>
     <LinearLayout
@@ -189,6 +191,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btn_all_messages"
+                android:text="Mesajlar"
+                android:background="@android:color/holo_red_light"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

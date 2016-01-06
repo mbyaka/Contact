@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by YAKA on 2.1.2016.
@@ -55,6 +56,11 @@ public class SendSms extends Activity{
         try {
             SmsManager sms = SmsManager.getDefault();
             sms.sendTextMessage(phoneNumber, null, message, null, null);
+
+            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+            Message msg = new Message(phoneNumber,false,new Date(),new Date(),message);
+            databaseHelper.addMessage(msg);
+
             Toast.makeText(getApplication(),"Mesajınız Gönderildi...",Toast.LENGTH_SHORT).show();
             System.exit(0);
         }

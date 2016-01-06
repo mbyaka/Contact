@@ -13,8 +13,7 @@ public class Message {
     private Date time;
     private String body;
 
-    public Message(int ID, String who, Boolean isComing, Date date, Date time, String body) {
-        this.ID = ID;
+    public Message(String who, Boolean isComing, Date date, Date time, String body) {
         this.who = who;
         this.isComing = isComing;
         this.date = date;

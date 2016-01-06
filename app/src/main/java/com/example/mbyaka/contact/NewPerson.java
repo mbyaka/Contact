@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Collections;
+
 /**
  * Created by YAKA on 6.1.2016.
  */
@@ -62,9 +64,10 @@ public class NewPerson extends Activity {
 
                 databaseHelper.addPerson(newPerson);
                 ((App)getApplication()).personArrayList.add(newPerson);
+                Collections.sort(((App)getApplication()).personArrayList, new Comaprator());
 
                 Intent personInfoIntent = new Intent(getApplicationContext(),PersonInfo.class);
-                personInfoIntent.putExtra("PERSON_ID",newPerson.getID());
+                personInfoIntent.putExtra("PERSON_POSITION",((App)getApplication()).personArrayList.indexOf(newPerson));
                 startActivity(personInfoIntent);
                 System.exit(0);
 
