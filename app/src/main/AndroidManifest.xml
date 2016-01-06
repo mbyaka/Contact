@@ -24,6 +24,8 @@
 
         <activity android:name=".SendSms"></activity>
         <activity android:name=".ContactList"></activity>
+        <activity android:name=".PersonInfo"></activity>
+        <activity android:name=".NewPerson"></activity>
     </application>
 
 </manifest>

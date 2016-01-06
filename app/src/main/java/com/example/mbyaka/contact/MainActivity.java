@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-
+    Button btn_new_person;
     Button btn_number_1;
     Button btn_number_2;
     Button btn_number_3;
@@ -42,6 +44,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        btn_new_person = (Button)findViewById(R.id.btn_new_person);
         btn_number_1 = (Button)findViewById(R.id.btn_number_1);
         btn_number_2 = (Button)findViewById(R.id.btn_number_2);
         btn_number_3 = (Button)findViewById(R.id.btn_number_3);
@@ -63,9 +66,10 @@ public class MainActivity extends ActionBarActivity {
         btn_number_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(textView_showNumber.getText().length() != 0) {
+                if(textView_showNumber.getText().length() > 0) {
                     textView_showNumber.setText(textView_showNumber.getText().subSequence(0, textView_showNumber.getText().length() - 1));
                 }
+
             }
         });
 
@@ -121,9 +125,68 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        btn_new_person.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(btn_new_person.getText().equals("Yeni Kişi")) {
+                    Intent newPersonIntent = new Intent(getApplicationContext(), NewPerson.class);
+                    newPersonIntent.putExtra("PHONE_NUMBER", textView_showNumber.getText().toString());
+                    startActivity(newPersonIntent);
+                }
+                else {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + textView_showNumber.getText().toString()));
+                    startActivity(callIntent);
+                }
+            }
+        });
+
+        textView_showNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ArrayList<Person> personList;
+                personList = ((App)getApplication()).personArrayList;
+
+                if(s.length() !=0) {
+                    btn_new_person.setVisibility(View.VISIBLE);
+                    int i = 0;
+                    while (i < personList.size()
+                            && !personList.get(i).getMobile_number().contains(s)
+                            && !personList.get(i).getHome_number().contains(s)
+                            && !personList.get(i).getWork_number().contains(s)) {
+                        i++;
+                    }
+
+                    if (i != personList.size()) {
+                        btn_new_person.setText(personList.get(i).toString());
+                    } else {
+                        btn_new_person.setText("Yeni Kişi");
+                    }
+                }
+                else {
+                    btn_new_person.setVisibility(View.GONE);
+                    btn_new_person.setText("");
+                    btn_new_person.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
     }
 
     public void numberOnClick(View view) {
+
         if(textView_showNumber.getText().length() != 13)
         {
             textView_showNumber.setText(textView_showNumber.getText().toString() + ((Button)view).getText().toString());

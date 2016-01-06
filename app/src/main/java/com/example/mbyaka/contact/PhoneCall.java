@@ -1,27 +1,27 @@
 package com.example.mbyaka.contact;
 
-import android.text.format.Time;
-
 import java.util.Date;
 
 /**
  * Created by YAKA on 2.1.2016.
  */
-public class PhoneCalls {
+public class PhoneCall {
 
     private int ID;
     private Date date;
     private Date time;
     private int duration;
+    private Boolean isComingCalls;
     private Boolean isMissingCalls;
     private int personID;
 
-    public PhoneCalls(Date date,Date time,int duration,Boolean isMissingCalls)
-    {
+    public PhoneCall(Date date, Date time, int duration, Boolean isComingCalls, Boolean isMissingCalls, int personID) {
         this.date = date;
         this.time = time;
         this.duration = duration;
+        this.isComingCalls = isComingCalls;
         this.isMissingCalls = isMissingCalls;
+        this.personID = personID;
     }
 
     public int getID() {
@@ -72,5 +72,11 @@ public class PhoneCalls {
         this.personID = personID;
     }
 
+    public Boolean getIsComingCalls() {
+        return isComingCalls;
+    }
 
+    public void setIsComingCalls(Boolean isComingCalls) {
+        this.isComingCalls = isComingCalls;
+    }
 }

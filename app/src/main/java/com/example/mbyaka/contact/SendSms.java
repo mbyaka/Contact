@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * Created by YAKA on 2.1.2016.
  */
@@ -29,13 +31,23 @@ public class SendSms extends Activity{
         editText_messageText = (EditText)findViewById(R.id.editText_messageText);
         btn_send_sms= (Button)findViewById(R.id.btn_send_sms);
 
+        final String phoneNumber = getIntent().getExtras().getString("Number").toString();
 
-        editText_messageNumber.setText(getIntent().getExtras().getString("Number").toString());
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        ArrayList<Person> lstPerson = ((App)getApplication()).personArrayList;
+        int i =0;
+        while(i<lstPerson.size() && !lstPerson.get(i).getMobile_number().equals(phoneNumber))
+            i++;
+        if(i==lstPerson.size()){
+            editText_messageNumber.setText(phoneNumber);
+        }else{
+            editText_messageNumber.setText(lstPerson.get(i).toString());
+        }
 
         btn_send_sms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendSMS(editText_messageNumber.getText().toString(), editText_messageText.getText().toString());
+                sendSMS(phoneNumber, editText_messageText.getText().toString());
             }
         });
     }

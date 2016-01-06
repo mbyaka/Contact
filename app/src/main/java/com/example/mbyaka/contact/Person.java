@@ -20,13 +20,29 @@ public class Person {
     private int numberOfMissingCall;
     private int numberOfSentMessage;
     private int numberOfReceivedMessage;
-    private ArrayList<PhoneCalls> phoneCallses;
+    private ArrayList<PhoneCall> phoneCallses;
 
+    public Person()
+    {
+        this.name = "";
+        this.surName = "";
+        this.home_number = "";
+        this.work_number = "";
+        this.mobile_number = "";
+        this.eMail = "";
+        this.location = "";
+        this.totalDurationInComingCall = 0;
+        this.totalDurationOutGoingCall = 0;
+        this.numberOfMissingCall = 0;
+        this.numberOfSentMessage = 0;
+        this.numberOfReceivedMessage = 0;
+        this.phoneCallses = null;
+    }
     public Person(int ID,String name, String surName, String home_number,
                   String work_number, String mobile_number, String eMail,
                   String location, int totalDurationInComingCall, int totalDurationOutGoingCall,
                   int numberOfMissingCall, int numberOfSentMessage, int numberOfReceivedMessage,
-                  ArrayList<PhoneCalls> phoneCallses) {
+                  ArrayList<PhoneCall> phoneCallses) {
 
         this.ID = ID;
         this.name = name;
@@ -54,7 +70,6 @@ public class Person {
     public void setID(int ID) {
         this.ID = ID;
     }
-
 
     public String getHome_number() {
         return home_number;
@@ -152,11 +167,11 @@ public class Person {
         this.work_number = work_number;
     }
 
-    public ArrayList<PhoneCalls> getPhoneCallses() {
+    public ArrayList<PhoneCall> getPhoneCallses() {
         return phoneCallses;
     }
 
-    public void setPhoneCallses(ArrayList<PhoneCalls> phoneCallses) {
+    public void setPhoneCallses(ArrayList<PhoneCall> phoneCallses) {
         this.phoneCallses = phoneCallses;
     }
 
